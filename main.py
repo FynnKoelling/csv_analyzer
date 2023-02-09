@@ -13,6 +13,9 @@ st.markdown('***')
 if csv_file is not None:
 
     df = pd.read_csv(csv_file)
+    
+    if 'cntry' in df.columns:
+        df = df.loc[df['cntry'] == 'DE]
 
     st.header('Full data')
 
