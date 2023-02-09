@@ -13,9 +13,6 @@ st.markdown('***')
 if csv_file is not None:
 
     df = pd.read_csv(csv_file)
-    
-    if 'cntry' in df.columns:
-        df = df.loc[df['cntry'] == 'DE']
 
     st.header('Full data')
 
@@ -24,6 +21,13 @@ if csv_file is not None:
     with col2:
         st.dataframe(df)
 
+    st.markdown('***')
+    
+    if 'cntry' in df.columns:
+        st.header('Select countries')
+        chosen_countries = st.multiselect('', df['cntry'].to_list())
+        df = df.loc[df['cntry'].isin(chosen_countries)]
+        
     st.markdown('***')
 
     st.header('Select column to analyze')
