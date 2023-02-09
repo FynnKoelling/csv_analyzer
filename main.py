@@ -25,7 +25,7 @@ if csv_file is not None:
     
     if 'cntry' in df.columns:
         st.header('Select countries')
-        chosen_countries = st.multiselect('', df['cntry'].to_list())
+        chosen_countries = st.multiselect('', df['cntry'].unique())
         df = df.loc[df['cntry'].isin(chosen_countries)]
         
     st.markdown('***')
