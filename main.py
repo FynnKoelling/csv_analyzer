@@ -138,6 +138,8 @@ with tab_plot:
                             x=x_lab,
                             y=y_lab,
                             text_auto=True, aspect="auto")
+            
+            fig.show()
 
             st.plotly_chart(fig, use_container_width=True)
 
