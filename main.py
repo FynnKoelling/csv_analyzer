@@ -87,54 +87,55 @@ with tab_csv:
             st.subheader('Not Usable Values')
             st.dataframe(bad_values)
 
-    with tab_plot:
+with tab_plot:
+
+    if csv_file is not None:
 
         st.subheader('Select two non-numerical variables to plot')
 
-        if csv_file is not None:
+        x = st.selectbox('Select x column', column_names)
+        y = st.selectbox('Select y column', column_names)
 
-            x = st.selectbox('Select x column', column_names)
-            y = st.selectbox('Select y column', column_names)
+        if x == y:
+            st.text('Select different columns!')
+        else:
+            plot_df = df[[x, y]]
 
-            if x == y:
-                st.text('Select different columns!')
-            else:
-                plot_df = df[[x, y]]
+            values_x = st.multiselect('Select bad x-values', sorted(plot_df[x].unique()))
 
-                values_x = st.multiselect('Select bad x-values', sorted(plot_df[x].unique()))
+            plot_df = plot_df.loc[~plot_df[x].isin(values_x)]
 
-                plot_df = plot_df.loc[~plot_df[x].isin(values_x)]
+            values_y = st.multiselect('Select bad y-values', sorted(plot_df[y].unique()))
 
-                values_y = st.multiselect('Select bad y-values', sorted(plot_df[y].unique()))
+            plot_df = plot_df.loc[~plot_df[y].isin(values_y)]
 
-                plot_df = plot_df.loc[~plot_df[y].isin(values_y)]
+            test = plot_df.groupby(by=[x, y], as_index=False).size()
 
-                test = plot_df.groupby(by=[x, y], as_index=False).size()
+            data = list()
 
-                data = list()
+            x_values = test[x].unique()
+            y_values = test[y].unique()
 
-                x_values = test[x].unique()
-                y_values = test[y].unique()
+            for y_val in y_values:
+                tmp = list()
+                for x_val in x_values:
+                    cell = test.loc[(test[x] == x_val) & (test[y] == y_val)]['size'].values
+                    if cell.size == 0:
+                        cell = 0
+                    else:
+                        cell = cell[0]
+                    tmp.append(cell)
+                data.append(tmp)
 
-                for y_val in y_values:
-                    tmp = list()
-                    for x_val in x_values:
-                        cell = test.loc[(test[x] == x_val) & (test[y] == y_val)]['size'].values
-                        if cell.size == 0:
-                            cell = 0
-                        else:
-                            cell = cell[0]
-                        tmp.append(cell)
-                    data.append(tmp)
+            x_lab = [str(i) for i in x_values]
+            y_lab = [str(i) for i in y_values]
 
-                x_lab = [str(i) for i in x_values]
-                y_lab = [str(i) for i in y_values]
+            fig = px.imshow(data,
+                            labels=dict(x=x, y=y, color="Count"),
+                            x=x_lab,
+                            y=y_lab,
+                            text_auto=True, aspect="auto")
 
-                fig = px.imshow(data,
-                                labels=dict(x=x, y=y, color="Count"),
-                                x=x_lab,
-                                y=y_lab,
-                                text_auto=True, aspect="auto")
+            st.plotly_chart(fig, use_container_width=True)
 
-                st.plotly_chart(fig, use_container_width=True)
 
