@@ -127,8 +127,8 @@ with tab_plot:
                     tmp.append(cell)
                 data.append(tmp)
 
-            x_lab = [" "+str(i)+" " for i in x_values]
-            y_lab = [" "+str(i)+" " for i in y_values]
+            x_lab = ["| "+str(i)+" |" for i in x_values]
+            y_lab = ["| "+str(i)+" |" for i in y_values]
 
             fig = px.imshow(data,
                             labels=dict(x=x, y=y, color="Count"),
